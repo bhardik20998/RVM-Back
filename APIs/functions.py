@@ -21,6 +21,9 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client['RVM']
 
 
+def float_to_percentage(value):
+    return f'{value * 100:.0f}%'
+
 def get_all_documents(collectionName):
     try:
         collection = db[collectionName]
@@ -51,7 +54,7 @@ def save_data(documentsArray, collectionName):
 
 
 # def fit_new(input_data, scheme, base_data):
-#     X = base_data[['city', 'Make', 'body_type',
+#     X = base_data[['City', 'Make', 'body_type',
 #                   'odometer_reading', 'vehicle_age']]
 
 #     Y = base_data[['Residual_Value']]
@@ -70,7 +73,7 @@ def save_data(documentsArray, collectionName):
 
 
 # def fit_existing(input_data, scheme, base_data):
-#     X = base_data[['city', 'Model', 'odometer_reading', 'vehicle_age']]
+#     X = base_data[['City', 'Model', 'odometer_reading', 'vehicle_age']]
 #     Y = base_data[['Residual_Value']]
 #     X = pd.get_dummies(X, columns=list(X.select_dtypes(
 #         include=['object']).columns), drop_first=True)
@@ -103,62 +106,62 @@ pd.options.display.float_format = "{:.2f}".format
 
 
 # Create a function to assign cities to buckets
-def categorize_city(city):
-    if city in city_buck_1:
+def categorize_City(City):
+    if City in City_buck_1:
         return 'bucket_1'
-    elif city in city_buck_2:
+    elif City in City_buck_2:
         return 'bucket_2'
-    elif city in city_buck_3:
+    elif City in City_buck_3:
         return 'bucket_3'
-    elif city in city_buck_4:
+    elif City in City_buck_4:
         return 'bucket_4'
-    elif city in city_buck_5:
+    elif City in City_buck_5:
         return 'bucket_5'
-    elif city in city_buck_6:
+    elif City in City_buck_6:
         return 'bucket_6'
-    elif city in city_buck_7:
+    elif City in City_buck_7:
         return 'bucket_7'
-    elif city in city_buck_8:
+    elif City in City_buck_8:
         return 'bucket_8'
-    elif city in city_buck_9:
+    elif City in City_buck_9:
         return 'bucket_9'
-    elif city in city_buck_10:
+    elif City in City_buck_10:
         return 'bucket_10'
-    elif city in city_buck_11:
+    elif City in City_buck_11:
         return 'bucket_11'
-    elif city in city_buck_12:
+    elif City in City_buck_12:
         return 'bucket_12'
-    elif city in city_buck_13:
+    elif City in City_buck_13:
         return 'bucket_13'
-    elif city in city_buck_14:
+    elif City in City_buck_14:
         return 'bucket_14'
     else:
         return 'Others'
 
 
 # City Buckets
-city_buck_1 = ["tirur", "kalpetta", "shimoga", "calicut", "malappuram", "kannur", "palghat",
+City_buck_1 = ["tirur", "kalpetta", "shimoga", "calicut", "malappuram", "kannur", "palghat",
                "kumbakonam", "trivandrum", "coimbatore", "tiruchirapalli", "kasaragod"]
-city_buck_2 = ["tirunelveli", "kollam", "madurai", "trichur", "puducherry", "tiruppur",
+City_buck_2 = ["tirunelveli", "kollam", "madurai", "trichur", "puducherry", "tiruppur",
                "salem", "muvattupuzha"]
-city_buck_3 = ['ernakulam', 'kottayam', 'vellore', 'erode',
+City_buck_3 = ['ernakulam', 'kottayam', 'vellore', 'erode',
                'mangalore', 'udupi', 'nellore', 'guntur', 'amritsar', 'karimnagar']
-city_buck_4 = ['tirupati', 'kalaburgi',
+City_buck_4 = ['tirupati', 'kalaburgi',
                'anantapur', 'vijayawada', 'jalgaon', 'darjeeling', 'ahmedabad', 'kurnool', 'bilaspur', 'rajahmundry', 'trichy']
-city_buck_5 = ['visakhapatnam', 'tumkur', 'jammu', 'ludhiana', 'panchkula', 'hubli', 'chhindwara', "pune",
+City_buck_5 = ['visakhapatnam', 'tumkur', 'jammu', 'ludhiana', 'panchkula', 'hubli', 'chhindwara', "pune",
                "jalandhar", "guwahati", "surat", "indore", "sriganganagar", "panvel"]
-city_buck_6 = ["thane", "vapi", "mohali", "patiala", "satna", "warangal", "karnal", "dhanbad", "latur",
+City_buck_6 = ["thane", "vapi", "mohali", "patiala", "satna", "warangal", "karnal", "dhanbad", "latur",
                "lucknow", "raipur", "nashik", "cochin", "dehradun", "sangrur", "baramati"]
-city_buck_7 = ["hissar", "solan", "bhopal", "chandigarh", "howrah", "mysore", "vadodara",
+City_buck_7 = ["hissar", "solan", "bhopal", "chandigarh", "howrah", "mysore", "vadodara",
                "jaipur", "ambala", "ranchi", "bhilwara"]
-city_buck_8 = ["faridabad", "panipat", "yamuna nagar", "varanasi", "jodhpur", "cuttack", "patna", "rohtak", "kolkata",
+City_buck_8 = ["faridabad", "panipat", "yamuna nagar", "varanasi", "jodhpur", "cuttack", "patna", "rohtak", "kolkata",
                "udaipur", "gulbarga", "allahabad", "nagpur"]
-city_buck_9 = ["gurgaon", "ghaziabad", "agra", "noida", "meerut", "kanpur"]
-city_buck_10 = ["chennai"]
-city_buck_11 = ["hyderabad"]
-city_buck_12 = ["bangalore"]
-city_buck_13 = ["mumbai"]
-city_buck_14 = ["delhi"]
+City_buck_9 = ["gurgaon", "ghaziabad", "agra", "noida", "meerut", "kanpur"]
+City_buck_10 = ["chennai"]
+City_buck_11 = ["hyderabad"]
+City_buck_12 = ["bangalore"]
+City_buck_13 = ["mumbai"]
+City_buck_14 = ["delhi"]
 
 
 # Function to convert strings to lowercase
@@ -189,18 +192,20 @@ def manipulation(data):
     elif isinstance(data, pd.Series):
         data = data.map(lower_if_string)
         data = data.map(strip_string)
-    data['vehicle_age'] = data['vehicle_age'].astype(int)
-    data['odometer_reading'] = data['odometer_reading'].astype(int)
-    data['vehicle_age'] = data['vehicle_age'].apply(
+    data['Tenure'] = data['Tenure'].astype(int)
+    data['Odometer Reading'] = data['Odometer Reading'].astype(int)
+    data['Tenure'] = data['Tenure'].apply(
         lambda x: np.maximum(x, 1))  # 96
     # data['retail'] = np.where(data['odometer_reading']
     #                           > data['vehicle_age'] * 35000, '0', '1')
-    # Apply the categorization function to the 'city' column in your data
-    data['city'] = data['city'].apply(categorize_city)
+    # Apply the categorization function to the 'City' column in your data
+    data['City'] = data['City'].apply(categorize_City)
     return data
 
 
 # In[140]:
+
+
 
 
 def fit(input_data, base_data):
@@ -233,16 +238,16 @@ def fit(input_data, base_data):
 
 def calculate_Y(input_data, scheme, base_data):
 
-    # base_data['retail'] = np.where(
-    #     base_data['odometer_reading'] > base_data['vehicle_age'] * 35000, 'Commercial', 'Retail')
-
+    base_data['Retail'] = np.where(
+        base_data['Odometer Reading'] > base_data['Tenure'] * 35000, 'Commercial', 'Retail')
+    
     if scheme == 'existingModel':
         base_data = manipulation(base_data)
 
         base_data = base_data[[
-            'city', 'Model', 'odometer_reading', 'vehicle_age', 'retail', 'Residual_Value']]
-        input_data = input_data[['city', 'Model',
-                                 'odometer_reading', 'vehicle_age']]
+            'City', 'Model', 'Odometer Reading', 'Tenure', 'Retail', 'Residual_Value']]
+        input_data = input_data[['City', 'Model',
+                                 'Odometer Reading', 'Tenure',"Retail"]]
 
         y_pred = fit(input_data, base_data)
 
@@ -256,12 +261,12 @@ def calculate_Y(input_data, scheme, base_data):
         #         final_y_pred.append(y_pred[i - index_counter])
         y_scaled_pred = y_pred*0.81
     elif scheme == 'newModel':
+       
         base_data = manipulation(base_data)
-
-        base_data = base_data[['city', 'Make', 'body_type',
-                               'odometer_reading', 'vehicle_age', 'retail', 'Residual_Value']]
-        input_data = input_data[['city', 'Make',
-                                 'body_type', 'odometer_reading', 'vehicle_age']]
+        base_data = base_data[['City', 'Make', 'Body Type',
+                               'Odometer Reading', 'Tenure', 'Retail', 'Residual_Value']]
+        input_data = input_data[['City', 'Make',
+                                 'Body Type', 'Odometer Reading', 'Tenure',"Retail"]]
 
         y_pred = fit(input_data, base_data)
 

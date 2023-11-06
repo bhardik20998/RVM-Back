@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import pandas as pd
 from bson import ObjectId
 from bson import json_util
-from .functions import save_data, calculate_Y, get_all_documents, remove_object_id
+from .functions import save_data, calculate_Y, get_all_documents, remove_object_id,float_to_percentage
 # Create your views here
 import math
 import numpy as np
@@ -69,9 +69,9 @@ def Calculating_Y_Single(request):
         base_data = (pd.DataFrame(get_all_documents('base_data'))
                      ).drop('_id', axis=1)
 
-        input_data['odometer_reading'] = input_data['odometer_reading'].astype(
+        input_data['Odometer Reading'] = input_data['Odometer Reading'].astype(
             int)
-        input_data['vehicle_age'] = input_data['vehicle_age'].astype(int)
+        input_data['Tenure'] = input_data['Tenure'].astype(int)
         result, scaled_result = calculate_Y(input_data, scheme, base_data)
         input_data['Result'] = [None] * len(result)
         for x in range(len(result)):
@@ -92,18 +92,31 @@ def Calculating_Y(request):
         base_data = (pd.DataFrame(get_all_documents('base_data'))
                      ).drop('_id', axis=1)
 
-        input_data['odometer_reading'] = input_data['odometer_reading'].astype(
+        input_data['Odometer Reading'] = input_data['Odometer Reading'].astype(
             int)
-        input_data['vehicle_age'] = input_data['vehicle_age'].astype(int)
+        input_data['Tenure'] = input_data['Tenure'].astype(int)
+
+
+
+
+        # retail_not_in_base = (check_input(
+        #         input_data, base_data, 'retail'))
+        # input_data = input_data.drop(list(retail_not_in_base))
+        # input_data = input_data.reset_index(drop=True)
+
+
+
+
 
         if (scheme == "newModel"):
             make_not_in_base = (check_input(input_data, base_data, 'Make'))
             input_data = input_data.drop(list(make_not_in_base))
             input_data = input_data.reset_index(drop=True)
             bodytype_not_in_base = (check_input(
-                input_data, base_data, 'body_type'))
+                input_data, base_data, 'Body Type'))
             input_data = input_data.drop(list(bodytype_not_in_base))
             input_data = input_data.reset_index(drop=True)
+           
         else:
             make_not_in_base = (check_input(input_data, base_data, 'Model'))
             input_data = input_data.drop(list(make_not_in_base))
@@ -111,20 +124,23 @@ def Calculating_Y(request):
 
         result, scaled_result = calculate_Y(input_data, scheme, base_data)
 
-        input_data['Predicted Residual Value'] = [None] * len(result)
+        input_data['Residual Value'] = [None] * len(result)
         for x in range(len(result)):
             if (result[x][0] == 0):
-                input_data['Predicted Residual Value'][x] = "Error: Outof bounds."
+                input_data['Residual Value'][x] = "Error: Outof bounds."
             else:
-                input_data['Predicted Residual Value'][x] = result[x][0]
+                input_data['Residual Value'][x] = result[x][0]
 
-        input_data['Scaled Predicted Residual Value'] = [
+        input_data['Adjusted Residual Value'] = [
             None] * len(scaled_result)
         for x in range(len(scaled_result)):
             if (scaled_result[x][0] == 0):
-                input_data['Scaled Predicted Residual Value'][x] = "Error: Outof bounds."
+                input_data['Adjusted Residual Value'][x] = "Error: Outof bounds."
             else:
-                input_data['Scaled Predicted Residual Value'][x] = scaled_result[x][0]
+                input_data['Adjusted Residual Value'][x] = scaled_result[x][0]
+
+        input_data['Residual Value']=input_data['Residual Value'].apply(float_to_percentage)
+        input_data['Adjusted Residual Value']=input_data['Adjusted Residual Value'].apply(float_to_percentage)
 
         # input_data['Result'] = input_data['Result'].round(3)
         # input_data = input_data.rename(columns={'vehicle_age': 'Lease Tenure'})
