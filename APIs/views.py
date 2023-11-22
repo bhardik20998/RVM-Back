@@ -30,9 +30,14 @@ def SaveData(request):
         # Check if data is a dictionary with 'dataRows' key
         if not isinstance(data, dict) or 'dataRows' not in data:
             return JsonResponse({'error': 'Invalid data format'})
+        
+        def replace_purpose_with_retail(input_list):
+            return ['Retail' if item == 'Usage' else item for item in input_list]
 
         # Extract 'dataRows' list
-        column_names = data['columnNames']
+        column_names = replace_purpose_with_retail(data['columnNames'])
+
+        
 
         # Extract data rows
         data_rows = data['dataRows']
@@ -91,18 +96,22 @@ def Calculating_Y(request):
         input_data = (pd.DataFrame(data_as_arrays)).drop('_id', axis=1)
         base_data = (pd.DataFrame(get_all_documents('base_data'))
                      ).drop('_id', axis=1)
+        
+        input_data=drop_rows_with_invalid_values(input_data)
+
+        input_data = input_data.reset_index(drop=True)
+
+        input_data=drop_rows_without_int(input_data,'Odometer Reading')
+        input_data=drop_rows_without_int(input_data,'Tenure')
+        input_data = input_data.reset_index(drop=True)
 
         input_data['Odometer Reading'] = input_data['Odometer Reading'].astype(
             int)
         input_data['Tenure'] = input_data['Tenure'].astype(int)
+        input_data = input_data[input_data['Retail'].isin(['Retail', 'Commercial'])]
 
 
 
-
-        # retail_not_in_base = (check_input(
-        #         input_data, base_data, 'retail'))
-        # input_data = input_data.drop(list(retail_not_in_base))
-        # input_data = input_data.reset_index(drop=True)
 
 
 
@@ -115,11 +124,14 @@ def Calculating_Y(request):
             bodytype_not_in_base = (check_input(
                 input_data, base_data, 'Body Type'))
             input_data = input_data.drop(list(bodytype_not_in_base))
+            input_data=drop_rows_with_invalid_values(input_data)
             input_data = input_data.reset_index(drop=True)
+
            
         else:
             make_not_in_base = (check_input(input_data, base_data, 'Model'))
             input_data = input_data.drop(list(make_not_in_base))
+            input_data=drop_rows_with_invalid_values(input_data)
             input_data = input_data.reset_index(drop=True)
 
         result, scaled_result = calculate_Y(input_data, scheme, base_data)
@@ -175,3 +187,21 @@ def FetchDetails(request):
                 item[key] = None
 
     return JsonResponse(remove_object_id(base_data), safe=False)
+
+def drop_rows_without_int(df, column_name):
+    # Drop rows where the specified column does not have int values or string representations of integers
+    # df = df[df[column_name].apply(lambda x: isinstance(x, int) or (isinstance(x, str) and x.isdigit()))]
+
+    return df
+
+def drop_rows_with_invalid_values(df):
+    # Drop rows with null values
+    df = df.dropna()
+
+    
+
+   
+    
+
+    return df
+

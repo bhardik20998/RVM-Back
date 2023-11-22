@@ -211,7 +211,7 @@ def manipulation(data):
 def fit(input_data, base_data):
     X = base_data.drop(columns={'Residual_Value'})
     Y = base_data[['Residual_Value']]
-    input_data = manipulation(input_data)
+    
     input_data_temp = pd.get_dummies(input_data, columns=list(
         input_data.select_dtypes(include=['object']).columns))
     input_data = pd.get_dummies(input_data, columns=list(
@@ -241,28 +241,28 @@ def calculate_Y(input_data, scheme, base_data):
     base_data['Retail'] = np.where(
         base_data['Odometer Reading'] > base_data['Tenure'] * 35000, 'Commercial', 'Retail')
     
+    base_data = manipulation(base_data)
+    base_data=categorize_model(base_data)
+    input_data = manipulation(input_data)
+    
     if scheme == 'existingModel':
-        base_data = manipulation(base_data)
+        
 
         base_data = base_data[[
             'City', 'Model', 'Odometer Reading', 'Tenure', 'Retail', 'Residual_Value']]
         input_data = input_data[['City', 'Model',
                                  'Odometer Reading', 'Tenure',"Retail"]]
-
+        input_data=categorize_model(input_data)
         y_pred = fit(input_data, base_data)
 
         final_y_pred = []
 
-        # for i in range(len(y_pred) + len(model_not_in_base)):
-        #     if index_counter < len(model_not_in_base) and i == model_not_in_base[index_counter]:
-        #         final_y_pred.append(0)
-        #         index_counter += 1
-        #     else:
-        #         final_y_pred.append(y_pred[i - index_counter])
-        y_scaled_pred = y_pred*0.81
+
+
+        y_scaled_pred = y_pred*0.83
     elif scheme == 'newModel':
        
-        base_data = manipulation(base_data)
+        
         base_data = base_data[['City', 'Make', 'Body Type',
                                'Odometer Reading', 'Tenure', 'Retail', 'Residual_Value']]
         input_data = input_data[['City', 'Make',
@@ -270,12 +270,16 @@ def calculate_Y(input_data, scheme, base_data):
 
         y_pred = fit(input_data, base_data)
 
-        # for index in make_not_in_base:
-        #     if 0 <= index < len(y_pred):
-        #         y_pred[index] = 0
-        # for index in bodytype_not_in_base:
-        #     if 0 <= index < len(y_pred):
-        #         y_pred[index] = 0
+        
         y_scaled_pred = y_pred*0.83
 
     return np.round(y_pred, 2), np.round(y_scaled_pred, 2)
+
+
+def categorize_model(base_data):
+    values_to_replace=['yaris','glanza','sx4','a-star','etios cross','corolla altis','zen estilo',
+'s-presso','xl6','s-cross',800,'stingray','land cruiser','ignis','dzire']
+    # Replace values with 'Others' in the 'Model' column
+    base_data['Model'] = base_data['Model'].apply(lambda x: 'Others' if x in values_to_replace else x)
+ 
+    return base_data
