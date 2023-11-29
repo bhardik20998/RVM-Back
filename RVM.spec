@@ -4,15 +4,16 @@
 block_cipher = None
 
 a = Analysis(['manage.py'],
-             pathex=['/path/to/your/django/project'],
+             pathex=['/Users/hardik/Documents/GitHub/RVM-Back'],
              binaries=[],
-             datas=[('/path/to/your/django/project/templates', 'templates'),
-                    ('/path/to/your/django/project/static', 'static')],
+             datas=[('/Users/hardik/Documents/GitHub/RVM-Frontend/dist', 'RVM-Frontend/dist')],
              hiddenimports=[
                  'APIs',  # Add all your app names
                  'django',
                  'RVM',  # Add your project name
                  'pkg_resources.py2_warn',
+                 'django.core.management',
+                 'django.core.management.commands.runserver',
              ],
              hookspath=[],
              runtime_hooks=[],
@@ -32,7 +33,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='myproject',
+          name='RVM',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

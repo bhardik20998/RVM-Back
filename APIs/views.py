@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import pandas as pd
 from bson import ObjectId
 from bson import json_util
-from .functions import save_data, calculate_Y, get_all_documents, remove_object_id,float_to_percentage
+from .functions import save_data, calculate_Y, get_all_documents, remove_object_id,float_to_percentage,fuzzy_match
 # Create your views here
 import math
 import numpy as np
@@ -19,6 +19,17 @@ def DeleteMasterData(request):
         db['master_data'].delete_many({})
         return JsonResponse({'message': 'Done'})
 
+    except Exception as e:
+        return JsonResponse({"error": e})
+    
+
+def MatchColumns(request):
+
+    try:
+        data = json.loads((request.body).decode('utf-8'))
+        fuzzy_match()
+        dataTypeCheck()
+           
     except Exception as e:
         return JsonResponse({"error": e})
 
