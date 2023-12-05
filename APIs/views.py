@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import pandas as pd
 from bson import ObjectId
 from bson import json_util
-from .functions import save_data, calculate_Y, get_all_documents, remove_object_id,float_to_percentage,fuzzy_match
+from .functions import save_data, calculate_Y, get_all_documents, remove_object_id,float_to_percentage,are_strings_similar
 # Create your views here
 import math
 import numpy as np
@@ -23,15 +23,7 @@ def DeleteMasterData(request):
         return JsonResponse({"error": e})
     
 
-def MatchColumns(request):
 
-    try:
-        data = json.loads((request.body).decode('utf-8'))
-        fuzzy_match()
-        dataTypeCheck()
-           
-    except Exception as e:
-        return JsonResponse({"error": e})
 
 
 def SaveData(request):
@@ -44,10 +36,15 @@ def SaveData(request):
         
         def replace_purpose_with_retail(input_list):
             return ['Retail' if item == 'Usage' else item for item in input_list]
+        
+        # def replace_fuel_with_fueltype(input_list):
+        #     return ['Fuel Type' if item == 'Fuel' else item for item in input_list]
+        # def replace_transmission_with_transmissiontype(input_list):
+        #     return ['Transmission Type' if item == 'Transmission' else item for item in input_list]
 
         # Extract 'dataRows' list
         column_names = replace_purpose_with_retail(data['columnNames'])
-
+       
         
 
         # Extract data rows
@@ -172,6 +169,8 @@ def Calculating_Y(request):
         # input_data['Scaled Predicted Residual Value'] = (
         #     input_data['Scaled Predicted Residual Value'] * 100).astype(str) + '%'
         payload = input_data.to_dict(orient='records')
+        # save_data(payload,'calculation_logs')
+        
         return JsonResponse(payload, safe=False)
 
     except Exception as e:

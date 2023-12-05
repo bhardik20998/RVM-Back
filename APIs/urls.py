@@ -7,7 +7,7 @@ urlpatterns = [
     path('det-values/', views.FetchDetails, name='detailvalues'),
     path('calculate_Y_single/', views.Calculating_Y_Single, name='calculating_Y'),
     path('delete-master-data/', views.DeleteMasterData, name="delete-master-data"),
-    path('check-columns/',views.MatchColumns,name="check-columns")
+   
     
 
 ]
