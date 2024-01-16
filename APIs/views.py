@@ -106,8 +106,18 @@ def Calculating_Y(request):
                      ).drop('_id', axis=1)
         
         input_data=drop_rows_with_invalid_values(input_data)
+        input_data['Tenure'] = input_data['Tenure'].astype(int)
 
         input_data = input_data.reset_index(drop=True)
+        if 'Odometer Reading' in input_data.columns:
+            # Do nothing
+            pass
+        elif 'Kms Driven per year' in input_data.columns:
+            # Multiply "KMs Driven per year" by "Tenure" and set it in "Odometer Reading"
+            input_data=drop_rows_without_int(input_data,'Kms Driven per year')
+            input_data['Kms Driven per year'] = input_data['Kms Driven per year'].astype(
+            int)
+            input_data['Odometer Reading'] = input_data['Kms Driven per year'] * input_data['Tenure']
 
         input_data=drop_rows_without_int(input_data,'Odometer Reading')
         input_data=drop_rows_without_int(input_data,'Tenure')
@@ -115,7 +125,7 @@ def Calculating_Y(request):
 
         input_data['Odometer Reading'] = input_data['Odometer Reading'].astype(
             int)
-        input_data['Tenure'] = input_data['Tenure'].astype(int)
+        
         input_data = input_data[input_data['Retail'].isin(['Retail', 'Commercial'])]
 
 
@@ -142,12 +152,18 @@ def Calculating_Y(request):
             input_data=drop_rows_with_invalid_values(input_data)
             input_data = input_data.reset_index(drop=True)
 
+
+
+
         result, scaled_result = calculate_Y(input_data, scheme, base_data)
+
+
 
         input_data['Residual Value'] = [None] * len(result)
         for x in range(len(result)):
             if (result[x][0] == 0):
-                input_data['Residual Value'][x] = "Error: Outof bounds."
+                # input_data['Residual Value'][x] = "Error: Outof bounds."
+                input_data['Residual Value'][x] = result[x][0]
             else:
                 input_data['Residual Value'][x] = result[x][0]
 
@@ -155,7 +171,9 @@ def Calculating_Y(request):
             None] * len(scaled_result)
         for x in range(len(scaled_result)):
             if (scaled_result[x][0] == 0):
-                input_data['Adjusted Residual Value'][x] = "Error: Outof bounds."
+                # input_data['Adjusted Residual Value'][x] = "Error: Outof bounds."
+                print("Hello")
+                input_data['Adjusted Residual Value'][x] = scaled_result[x][0]
             else:
                 input_data['Adjusted Residual Value'][x] = scaled_result[x][0]
 

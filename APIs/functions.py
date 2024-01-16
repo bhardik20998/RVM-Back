@@ -22,6 +22,8 @@ db = client['RVM']
 
 
 def float_to_percentage(value):
+    if(value=="Error: Outof bounds."):
+        return "Error: Outof bounds."
     return f'{value * 100:.0f}%'
 
 def get_all_documents(collectionName):
