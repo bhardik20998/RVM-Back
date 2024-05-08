@@ -83,6 +83,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'RVM',
         'CLIENT': {
+         
             'host': 'localhost:27017',  # e.g., 'localhost', 'mongodb://localhost:27017/'
         }
     }
